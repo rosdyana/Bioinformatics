@@ -3,6 +3,25 @@ library(shinydashboard)
 header <-
   dashboardHeader(title = span(tagList(icon("code"), "Bio Tools")))
 
+sidebar <- dashboardSidebar(sidebarMenu(
+  menuItem("Random Forest",
+           tabName = "randomforesttab",
+           icon = icon("tree")),
+  menuItem("Boruta Feature Selection",
+           tabName = "borutatab",
+           icon = icon("optin-monster")),
+  menuItem("Caret Feature Selection",
+           tabName = "carettab",
+           icon = icon("codiepie")),
+  actionButton("about", "About", icon = icon("info-circle")),
+  actionButton(
+    "github",
+    "Github",
+    icon = icon("github"),
+    onclick = "window.open('https://github.com/rosdyana/Bioinformatics', '_blank')"
+  )
+))
+
 body <- dashboardBody(
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/css?family=Oregano")
@@ -17,7 +36,8 @@ body <- dashboardBody(
       }
       '
     )
-  )),
+  )),  
+  tabItems(
   tabItem(tabName = "randomforesttab",
           fluidRow(
             column(
@@ -33,8 +53,7 @@ body <- dashboardBody(
                     'text/csv',
                     'text/comma-separated-values,text/plain',
                     '.csv',
-                    '.libsvm',
-                    '.arff'
+                    '.libsvm'
                   )
                 ),
                 uiOutput("uploadTesting"),
@@ -61,21 +80,56 @@ body <- dashboardBody(
                 verbatimTextOutput("result2")
               )
             )
-          ))
+          )),
+  tabItem(tabName = "borutatab",
+          fluidRow(
+            column(
+              width = 4,
+              box(
+                title =   tagList(shiny::icon("optin-monster") , "Boruta Feature Selection"),
+                width = NULL,
+                solidHeader = TRUE,
+                status = "primary",
+                fileInput(
+                  'fileBrouta',
+                  'Choose Dataset',
+                  accept = c(
+                    'text/csv',
+                    'text/comma-separated-values,text/plain',
+                    '.csv',
+                    '.libsvm'
+                  )
+                ),
+                uiOutput("runBoruta")
+              )),
+            column(
+              width = 8,
+              box(
+                title =   tagList(shiny::icon("optin-monster") , ""),
+                width = NULL,
+                solidHeader = TRUE,
+                status = "info",
+                plotOutput("drawPlotBoruta"),
+                verbatimTextOutput("resultBoruta")
+              )))),
+  tabItem(tabName = "carettab",
+          fluidRow(
+            column(
+              width = 4,
+              box(
+                title =   tagList(shiny::icon("codiepie") , "Caret Feature Selection"),
+                width = NULL,
+                solidHeader = TRUE,
+                status = "primary",
+                selectInput(
+                  "caretDataSelect",
+                  "Select dataset",
+                  list(
+                    "My Data","Iris","Cars","Titanic"
+                  )
+              )))))
 )
-
-sidebar <- dashboardSidebar(sidebarMenu(
-  menuItem("Random Forest",
-           tabName = "randomforesttab",
-           icon = icon("tree")),
-  actionButton("about", "About", icon = icon("info-circle")),
-  actionButton(
-    "github",
-    "Github",
-    icon = icon("github"),
-    onclick = "window.open('https://github.com/rosdyana/Bioinformatics', '_blank')"
-  )
-))
+)
 
 dashboardPage(header,
               sidebar,
