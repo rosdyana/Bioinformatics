@@ -1,136 +1,170 @@
 library(shinydashboard)
 
-header <-
-  dashboardHeader(title = span(tagList(icon("code"), "Bio Tools")))
+header <- dashboardHeader(title = span(tagList(icon("code"), 
+                                               "Bio Tools")))
 
-sidebar <- dashboardSidebar(sidebarMenu(
-  menuItem("Random Forest",
-           tabName = "randomforesttab",
-           icon = icon("tree")),
-  menuItem("Boruta Feature Selection",
-           tabName = "borutatab",
-           icon = icon("optin-monster")),
-  menuItem("Caret Feature Selection",
-           tabName = "carettab",
-           icon = icon("codiepie")),
-  actionButton("about", "About", icon = icon("info-circle")),
-  actionButton(
-    "github",
-    "Github",
-    icon = icon("github"),
-    onclick = "window.open('https://github.com/rosdyana/Bioinformatics', '_blank')"
-  )
-))
+sidebar <- dashboardSidebar(sidebarMenu(menuItem("Random Forest", 
+                                                 tabName = "randomforesttab", 
+                                                 icon = icon("tree")), 
+                                        menuItem("Bayes Naive", 
+                                                 tabName = "bayesnaivetab", 
+                                                 icon = icon("bold")), 
+                                        menuItem("KNN", tabName = "knntab", 
+                                                 icon = icon("file-o")), 
+                                        menuItem("SVM", tabName = "svmtab", 
+                                                 icon = icon("puzzle-piece")), 
+                                        menuItem("QuickRBF", 
+                                                 tabName = "quickrbftab", 
+                                                 icon = icon("fighter-jet")), 
+                                        menuItem("Boruta Feature Selection", 
+                                                 tabName = "borutatab", 
+                                                 icon = icon("optin-monster")), 
+                                        menuItem("Caret Feature Selection", 
+                                                 tabName = "carettab", 
+                                                 icon = icon("codiepie")), 
+                                        actionButton("about", 
+                                                     "About", icon = icon("info-circle")), 
+                                        actionButton("github", 
+                                                     "Github", icon = icon("github"), 
+                                                     onclick = "window.open('https://github.com/rosdyana/Bioinformatics', '_blank')")))
 
-body <- dashboardBody(
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/css?family=Oregano")
-  ),
-  tags$head(tags$style(
-    HTML(
-      '
-      .main-header .logo {
-      font-family: "Oregano", cursive;
-      font-weight: bold;
-      font-size: 24px;
-      }
-      '
-    )
-  )),  
-  tabItems(
-  tabItem(tabName = "randomforesttab",
-          fluidRow(
-            column(
-              width = 4,
-              box(
-                title =   tagList(shiny::icon("tree") , "Random Forest"),
-                width = NULL,
-                status = "primary",
-                fileInput(
-                  'file1',
-                  'Choose training File',
-                  accept = c(
-                    'text/csv',
-                    'text/comma-separated-values,text/plain',
-                    '.csv',
-                    '.libsvm'
-                  )
-                ),
-                uiOutput("uploadTesting"),
-                uiOutput("runRF")
-              )
-            ),
-            column(
-              width = 4,
-              box(
-                title = "",
-                width = NULL,
-                solidHeader = TRUE,
-                status = "primary",
-                verbatimTextOutput("result1")
-              )
-            ),
-            column(
-              width = 4,
-              box(
-                title = "",
-                width = NULL,
-                solidHeader = TRUE,
-                status = "primary",
-                verbatimTextOutput("result2")
-              )
-            )
-          )),
-  tabItem(tabName = "borutatab",
-          fluidRow(
-            column(
-              width = 4,
-              box(
-                title =   tagList(shiny::icon("optin-monster") , "Boruta Feature Selection"),
-                width = NULL,
-                solidHeader = TRUE,
-                status = "primary",
-                fileInput(
-                  'fileBrouta',
-                  'Choose Dataset',
-                  accept = c(
-                    'text/csv',
-                    'text/comma-separated-values,text/plain',
-                    '.csv',
-                    '.libsvm'
-                  )
-                ),
-                uiOutput("runBoruta")
-              )),
-            column(
-              width = 8,
-              box(
-                title =   tagList(shiny::icon("optin-monster") , ""),
-                width = NULL,
-                solidHeader = TRUE,
-                status = "info",
-                plotOutput("drawPlotBoruta"),
-                verbatimTextOutput("resultBoruta")
-              )))),
-  tabItem(tabName = "carettab",
-          fluidRow(
-            column(
-              width = 4,
-              box(
-                title =   tagList(shiny::icon("codiepie") , "Caret Feature Selection"),
-                width = NULL,
-                solidHeader = TRUE,
-                status = "primary",
-                selectInput(
-                  "caretDataSelect",
-                  "Select dataset",
-                  list(
-                    "My Data","Iris","Cars","Titanic"
-                  )
-              )))))
-)
-)
+body <- dashboardBody(tags$head(tags$link(rel = "stylesheet", 
+                                          type = "text/css", 
+                                          href = "https://fonts.googleapis.com/css?family=Oregano")), 
+                      tags$head(tags$style(HTML("\n      .main-header .logo {\n      font-family: \"Oregano\", cursive;\n      font-weight: bold;\n      font-size: 24px;\n      }\n      "))), 
+                      tabItems(tabItem(tabName = "randomforesttab", 
+                                       fluidRow(column(width = 4, 
+                                                       box(title = tagList(shiny::icon("tree"), 
+                                                                           "Random Forest"), 
+                                                           width = NULL, 
+                                                           status = "primary", 
+                                                           fileInput("file1", 
+                                                                     "Choose training File", 
+                                                                     accept = c("text/csv", 
+                                                                                "text/comma-separated-values,text/plain", 
+                                                                                ".csv", 
+                                                                                ".libsvm", 
+                                                                                ".arff")), 
+                                                           uiOutput("uploadTesting"), 
+                                                           uiOutput("runRF")))), 
+                                       fluidRow(column(width = 6, 
+                                                       box(title = "CV Performance - 5folds", 
+                                                           width = NULL, 
+                                                           collapsible = TRUE, 
+                                                           solidHeader = TRUE, 
+                                                           status = "info", 
+                                                           verbatimTextOutput("result1"))), 
+                                                column(width = 6, 
+                                                       box(title = "PERFORMANCE EVALUATION", 
+                                                           width = NULL, 
+                                                           collapsible = TRUE, 
+                                                           solidHeader = TRUE, 
+                                                           status = "info", 
+                                                           uiOutput("result2"))))), 
+                               tabItem(tabName = "borutatab", 
+                                       fluidRow(column(width = 4, 
+                                                       box(title = tagList(shiny::icon("optin-monster"), 
+                                                                           "Boruta Feature Selection"), 
+                                                           width = NULL, 
+                                                           status = "primary", 
+                                                           radioButtons("rb_boruta", 
+                                                                        "Choose one:", 
+                                                                        choiceNames = list("R Dataset", 
+                                                                                           "My Data"), 
+                                                                        choiceValues = list("rdataset", 
+                                                                                            "mydata")), 
+                                                           uiOutput("uploadFieldBoruta"), 
+                                                           uiOutput("runBoruta"))), 
+                                                column(width = 8, 
+                                                       box(title = tagList(shiny::icon("optin-monster"), 
+                                                                           ""), 
+                                                           width = NULL, 
+                                                           solidHeader = TRUE, 
+                                                           collapsible = TRUE, 
+                                                           status = "info", 
+                                                           plotOutput("drawPlotBoruta"), 
+                                                           verbatimTextOutput("resultBoruta"))))), 
+                               tabItem(tabName = "carettab", 
+                                       fluidRow(column(width = 4, 
+                                                       box(title = tagList(shiny::icon("codiepie"), 
+                                                                           "Caret Feature Selection"), 
+                                                           width = NULL, 
+                                                           status = "primary", 
+                                                           radioButtons("rb_caret", 
+                                                                        "Choose one:", 
+                                                                        choiceNames = list("R Dataset", 
+                                                                                           "My Data"), 
+                                                                        choiceValues = list("rdataset", 
+                                                                                            "mydata")), 
+                                                           uiOutput("uploadFieldCaret"), 
+                                                           uiOutput("runCaret"))), 
+                                                column(width = 8, 
+                                                       box(title = tagList(shiny::icon("codiepie"), 
+                                                                           ""), 
+                                                           width = NULL, 
+                                                           solidHeader = TRUE, 
+                                                           collapsible = TRUE, 
+                                                           status = "info", 
+                                                           plotOutput("drawPlotCaret"), 
+                                                           verbatimTextOutput("resultCaret"))))), 
+                               tabItem(tabName = "bayesnaivetab", 
+                                       fluidRow(column(width = 4, 
+                                                       box(title = tagList(shiny::icon("bold"), 
+                                                                           "Bayes Naive"), 
+                                                           width = NULL, 
+                                                           status = "primary", 
+                                                           fileInput("file1BN", 
+                                                                     "Choose training File", 
+                                                                     accept = c("text/csv", 
+                                                                                "text/comma-separated-values,text/plain", 
+                                                                                ".csv", 
+                                                                                ".libsvm", 
+                                                                                ".arff")), 
+                                                           uiOutput("uploadTestingBN"), 
+                                                           uiOutput("runBN"))), 
+                                                column(width = 8, 
+                                                       box(title = tagList(shiny::icon("bold"), 
+                                                                           ""), 
+                                                           width = NULL, 
+                                                           solidHeader = TRUE, 
+                                                           collapsible = TRUE, 
+                                                           status = "info", 
+                                                           "Prediction", 
+                                                           verbatimTextOutput("resultBN"), 
+                                                           "Cross Validation 5 folds", 
+                                                           verbatimTextOutput("resultBN2"))))), 
+                               tabItem(tabName = "knntab", 
+                                       fluidRow(column(width = 4, 
+                                                       box(title = tagList(shiny::icon("file-o"), 
+                                                                           "KNN"), 
+                                                           width = NULL, 
+                                                           status = "primary", 
+                                                           fileInput("file1knn", 
+                                                                     "Choose training File", 
+                                                                     accept = c("text/csv", 
+                                                                                "text/comma-separated-values,text/plain", 
+                                                                                ".csv", 
+                                                                                ".libsvm", 
+                                                                                ".arff")), 
+                                                           uiOutput("uploadTestingknn"), 
+                                                           uiOutput("runknn"))), 
+                                                column(width = 8, 
+                                                       box(title = tagList(shiny::icon("file-o"), 
+                                                                           ""), 
+                                                           width = NULL, 
+                                                           solidHeader = TRUE, 
+                                                           collapsible = TRUE, 
+                                                           status = "info", 
+                                                           "Prediction", 
+                                                           verbatimTextOutput("resultknn"), 
+                                                           "Cross Validation 5 folds", 
+                                                           verbatimTextOutput("resultknn2"))))), 
+                               tabItem(tabName = "quickrbftab", 
+                                       fluidRow(column(width = 4, 
+                                                       h2("coming soon")))), 
+                               tabItem(tabName = "svmtab", 
+                                       fluidRow(column(width = 4, 
+                                                       h2("coming soon"))))))
 
-dashboardPage(header,
-              sidebar,
-              body)
+dashboardPage(header, 
+              sidebar, body)
